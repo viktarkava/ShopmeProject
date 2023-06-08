@@ -20,7 +20,7 @@ public class UserRepositoryTests {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private TestEntityManager entityManager;
 
@@ -29,8 +29,32 @@ public class UserRepositoryTests {
 		Role roleAdmin = entityManager.find(Role.class, 1);
 		User viktar = new User("viktar@gmail.com", "viktar2020", "Viktar", "Kava");
 		viktar.addRole(roleAdmin);
-		
+
 		User savedUser = userRepository.save(viktar);
 		assertThat(savedUser.getId()).isGreaterThan(0);
+	}
+
+	@Test
+	public void testCreateUserWithTwoRoles() {
+		User userRavi = new User("ravi@gmail.com", "ravi2020", "Ravi", "Kumar");
+		Role editor = new Role(2);
+		Role assistant = new Role(4);
+		userRavi.addRole(editor);
+		userRavi.addRole(assistant);
+
+		User savedUser = userRepository.save(userRavi);
+		assertThat(savedUser.getId()).isGreaterThan(0);
+	}
+
+	@Test
+	public void testListAllUsers() {
+		Iterable<User> listUsers = userRepository.findAll();
+		listUsers.forEach(user -> System.out.println(user));
+	}
+
+	@Test
+	public void testGetUserById() {
+		User user = userRepository.findById(1).get();
+		assertThat(user).isNotNull();
 	}
 }
